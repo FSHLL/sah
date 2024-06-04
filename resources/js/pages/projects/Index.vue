@@ -2,14 +2,14 @@
     <el-page-header>
         <template #extra>
             <!-- <router-link :to="{ name: 'consults.create' }"> -->
-                <el-button>Create</el-button>
+                <el-button>{{ $t('projects.titles.create') }}</el-button>
             <!-- </router-link> -->
         </template>
     </el-page-header>
     <el-table
         :columns="columns"
         :row-key="(record) => record.id"
-        :data-source="consults.data"
+        :data-source="projects.data"
         :loading="loading"
     >
         <!-- <template #bodyCell="{ column, record }">
@@ -38,7 +38,7 @@
 import { onMounted, ref } from "vue";
 import { ElMessage } from 'element-plus'
 
-    let consults = []
+    let projects = []
     const loading = ref(true)
 
     const columns = [
@@ -63,39 +63,38 @@ import { ElMessage } from 'element-plus'
         },
     ];
 
-    const loadConsults = async () => {
+    const loadProjects= async () => {
         try {
-            const response = await axios.get('/api/consults');
+            const response = await axios.get('/api/projects');
 
             if (response.status === 200) {
-                consults = response.data;
+                projects = response.data;
             }
         } catch (error) {
-            message.error(error.message);
+            ElMessage('This is a error message.')
         } finally {
             loading.value = false;
         }
     }
 
-    const deleteConsult = async (consult) => {
+    const deleteProject= async (project) => {
         try {
-            const response = await axios.delete(`/api/consults/${consult.id}`);
-            console.log(consult);
+            const response = await axios.delete(`/api/projects/${consult.id}`);
             if (response.status === 200) {
-                const index = consults.indexOf(consult);
+                const index = projects.indexOf(consult);
                 if (index !== -1) {
-                    consults.splice(index, 1);
+                    projects.splice(index, 1);
                     ElMessage('This is a message.')
                 }
             }
         } catch (error) {
-            message.error(error.message);
+            ElMessage('This is a error message.')
         } finally {
             loading.value = false;
         }
     }
 
     onMounted(() => {
-        loadConsults()
+        loadProjects()
     })
 </script>

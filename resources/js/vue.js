@@ -1,5 +1,4 @@
 import { createApp } from 'vue/dist/vue.esm-bundler.js'
-import ElementPlus from 'element-plus'
 import PrimeVue from 'primevue/config';
 import router from './routes/router'
 import { i18nVue } from 'laravel-vue-i18n'
@@ -8,9 +7,7 @@ import Aura from './presets/aura'
 
 const app = createApp()
 
-app.use(ElementPlus)
 app.use(router)
-
 app.use(i18nVue, {
     resolve: lang => {
         const langs = import.meta.glob('../../lang/*.json', { eager: true });
@@ -18,7 +15,6 @@ app.use(i18nVue, {
         return langs[`../../lang/${lang}.json`].default;
     },
 })
-
 app.use(PrimeVue, {
     unstyled: true,
     pt: Aura

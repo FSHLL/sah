@@ -1,45 +1,16 @@
 <template>
-    <el-page-header>
-        <template #extra>
-            <!-- <router-link :to="{ name: 'consults.create' }"> -->
-                <el-button>{{ $t('projects.titles.create') }}</el-button>
-            <!-- </router-link> -->
-        </template>
-    </el-page-header>
-    <el-table
-        :columns="columns"
-        :row-key="(record) => record.id"
-        :data-source="projects.data"
-        :loading="loading"
-    >
-        <!-- <template #bodyCell="{ column, record }">
-            <template v-if="column.key === 'action'">
-                <span>
-                    <router-link :to="{ path: `/consults/${record.id}` }">
-                        <a-button>See</a-button>
-                    </router-link>
-                    <a-divider type="vertical" />
-                        <a-popconfirm
-                            title="Are you sure delete this consult?"
-                            ok-text="Yes"
-                            cancel-text="No"
-                            :okButtonProps="{danger: true}"
-                            @confirm="deleteConsult(record)"
-                        >
-                            <a-button danger>Delete</a-button>
-                        </a-popconfirm>
-                </span>
-            </template>
-        </template> -->
-    </el-table>
+    <div>
+
+    </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { ElMessage } from 'element-plus'
+import Calendar from 'primevue/calendar'
 
     let projects = []
     const loading = ref(true)
+    const date = ref()
 
     const columns = [
         {
@@ -71,7 +42,7 @@ import { ElMessage } from 'element-plus'
                 projects = response.data;
             }
         } catch (error) {
-            ElMessage('This is a error message.')
+            console.log(error);
         } finally {
             loading.value = false;
         }
@@ -84,11 +55,11 @@ import { ElMessage } from 'element-plus'
                 const index = projects.indexOf(consult);
                 if (index !== -1) {
                     projects.splice(index, 1);
-                    ElMessage('This is a message.')
+                    console.log('deleted');
                 }
             }
         } catch (error) {
-            ElMessage('This is a error message.')
+            console.log(error);
         } finally {
             loading.value = false;
         }

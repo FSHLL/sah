@@ -18,4 +18,11 @@ class AWSCredentialFactory extends Factory
             'user_id' => User::factory(),
         ];
     }
+
+    public function forUser(User $user): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'user_id' => $user,
+        ]);
+    }
 }

@@ -11,7 +11,7 @@ class AWSCredentialTest extends TestCase
 {
     use RefreshDatabase;
 
-    const PATH = 'aws-credential';
+    const PATH = 'api/aws-credential';
 
     public function testAWSCredentialCanBeCreated(): void
     {
@@ -34,7 +34,7 @@ class AWSCredentialTest extends TestCase
     public function testAWSCredentialCanBeShowed(): void
     {
         $user = User::factory()->create();
-        $awsCredential = AWSCredential::factory()->create();
+        $awsCredential = AWSCredential::factory()->forUser($user)->create();
 
         $response = $this
             ->actingAs($user)
@@ -51,7 +51,7 @@ class AWSCredentialTest extends TestCase
     public function testAWSCredentialCanBeUpdated(): void
     {
         $user = User::factory()->create();
-        $awsCredential = AWSCredential::factory()->create();
+        $awsCredential = AWSCredential::factory()->forUser($user)->create();
 
         $response = $this
             ->actingAs($user)
@@ -63,21 +63,33 @@ class AWSCredentialTest extends TestCase
         $response
             ->assertOk()
             ->assertJson([
-                'access_key_id' => 'key-updated'
+                'access_key_id' => 'key-updated',
             ]);
     }
 
     public function testAWSCredentialCanBeDeleted(): void
     {
         $user = User::factory()->create();
-        $awsCredential = AWSCredential::factory()->create();
+        $awsCredential = AWSCredential::factory()->forUser($user)->create();
 
         $response = $this
             ->actingAs($user)
             ->delete(self::PATH.'/'.$awsCredential->id);
 
-        $response
-            ->assertOk()
-            ->assertJson([true]);
+        $response->assertOk();
+
+        $this->assertDatabaseMissing(AWSCredential::class, $awsCredential->toArray());
+    }
+
+    public function testAWSCredentialNotCanBeShowedIfIsFromOtherUser(): void
+    {
+        $user = User::factory()->create();
+        $awsCredential = AWSCredential::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->get(self::PATH.'/'.$awsCredential->id);
+
+        $response->assertNotFound();
     }
 }

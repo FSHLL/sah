@@ -37,8 +37,9 @@ class AWSCredentialController extends Controller
 
     public function update(UpdateAWSCredentialRequest $request, AWSCredential $aWSCredential): JsonResponse
     {
+        $aWSCredential->update($request->validated());
         return Response::json(
-            $aWSCredential->update($request->validated()),
+            $aWSCredential->fresh()
         );
     }
 

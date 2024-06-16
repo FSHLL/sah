@@ -13,6 +13,7 @@ class AWSCredential extends Model
     protected $fillable = [
         'access_key_id',
         'access_key_secret',
+        'user_id',
     ];
 
     protected $cast = [

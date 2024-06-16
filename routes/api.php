@@ -8,4 +8,4 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('aws-credential', AWSCredentialController::class);
+Route::apiResource('aws-credential', AWSCredentialController::class)->middleware('auth:sanctum');

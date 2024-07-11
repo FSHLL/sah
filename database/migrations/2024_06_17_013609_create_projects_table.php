@@ -8,17 +8,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('a_w_s_credentials', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('access_key_id');
-            $table->string('access_key_secret');
+            $table->string('name');
+            $table->string('stack_id', 250)->unique();
             $table->foreignUuid('user_id')->constrained();
+            $table->foreignUuid('a_w_s_credential_id')->constrained();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('a_w_s_credentials');
+        Schema::dropIfExists('projects');
     }
 };

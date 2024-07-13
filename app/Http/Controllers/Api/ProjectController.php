@@ -3,50 +3,48 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Project\StoreProjectRequest;
+use App\Http\Requests\Project\UpdateProjectRequest;
 use App\Models\Project;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Response;
 
 class ProjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        return Response::json(
+            Project::where('user_id', auth()->id())->paginate()
+        );
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
-        //
+        return Response::json(
+            Project::create([
+                ...$request->validated(),
+                'user_id' => auth()->user()->getAuthIdentifier(),
+            ]),
+            HttpResponse::HTTP_CREATED
+        );
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Project $project)
+    public function show(Project $project): JsonResponse
     {
-        //
+        return Response::json($project);
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        $project->update($request->validated());
+        return Response::json(
+            $project->fresh()
+        );
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Project $project)
+    public function destroy(Project $project): JsonResponse
     {
-        //
+        return Response::json($project->delete());
     }
 }

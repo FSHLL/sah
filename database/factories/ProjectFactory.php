@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\AWSCredential;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,15 +11,20 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ProjectFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->text(10),
+            'stack_id' => $this->faker->text(10),
+            'user_id' => User::factory(),
+            'a_w_s_credential_id' => AWSCredential::factory(),
         ];
+    }
+
+    public function forUser(User $user): static
+    {
+        return $this->state(fn () => [
+            'user_id' => $user,
+        ]);
     }
 }

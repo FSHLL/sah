@@ -11,7 +11,7 @@ class AWSCredentialTest extends TestCase
 {
     use RefreshDatabase;
 
-    const PATH = 'api/aws-credential';
+    const PATH = 'api/aws-credentials';
 
     public function testAWSCredentialCanBeCreated(): void
     {

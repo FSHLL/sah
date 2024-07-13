@@ -12,7 +12,7 @@ class ProjectTest extends TestCase
 {
     use RefreshDatabase;
 
-    const PATH = 'api/project';
+    const PATH = 'api/projects';
 
     public function testProjectCanBeCreated(): void
     {

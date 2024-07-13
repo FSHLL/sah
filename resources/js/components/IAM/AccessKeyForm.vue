@@ -25,7 +25,7 @@ const accessKeySecret = ref("");
 
 const createAccessKeys = async () => {
     try {
-        const response = await axios.post('/api/aws-credential', {
+        await axios.post('/api/aws-credentials', {
             access_key_id: accessKeyId.value,
             access_key_secret: accessKeySecret.value,
         })

@@ -1,12 +1,15 @@
 <template>
     <div>
-
+        <DataTable :value="products" tableStyle="min-width: 50rem">
+            <Column v-for="col of columns" :key="col.key" :field="col.dataIndex" :header="col.name"></Column>
+        </DataTable>
     </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from "vue";
-import Calendar from 'primevue/calendar'
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
 
     let projects = []
     const loading = ref(true)
@@ -37,10 +40,7 @@ import Calendar from 'primevue/calendar'
     const loadProjects= async () => {
         try {
             const response = await axios.get('/api/projects');
-
-            if (response.status === 200) {
-                projects = response.data;
-            }
+            projects = response.data;
         } catch (error) {
             console.log(error);
         } finally {
@@ -50,13 +50,11 @@ import Calendar from 'primevue/calendar'
 
     const deleteProject= async (project) => {
         try {
-            const response = await axios.delete(`/api/projects/${consult.id}`);
-            if (response.status === 200) {
-                const index = projects.indexOf(consult);
-                if (index !== -1) {
-                    projects.splice(index, 1);
-                    console.log('deleted');
-                }
+            await axios.delete(`/api/projects/${consult.id}`);
+            const index = projects.indexOf(consult);
+            if (index !== -1) {
+                projects.splice(index, 1);
+                console.log('deleted');
             }
         } catch (error) {
             console.log(error);

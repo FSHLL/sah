@@ -9,5 +9,5 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('aws-credential', AWSCredentialController::class)->middleware('auth:sanctum');
-Route::apiResource('project', ProjectController::class)->middleware('auth:sanctum');
+Route::apiResource('aws-credentials', AWSCredentialController::class)->middleware('auth:sanctum');
+Route::apiResource('projects', ProjectController::class)->middleware('auth:sanctum');

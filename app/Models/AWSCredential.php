@@ -23,4 +23,15 @@ class AWSCredential extends Model
     protected $hidden = [
         'access_key_secret',
     ];
+
+    public function getConfig(): array
+    {
+        return [
+            'credentials' => [
+                'key'    => $this->access_key_id,
+                'secret' => $this->access_key_secret,
+            ],
+            'region' => 'us-east-1',
+        ];
+    }
 }

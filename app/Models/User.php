@@ -48,8 +48,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function awsCredential(): HasOne
+    public function credential(): HasOne
     {
-        return $this->hasOne(AWSCredential::class)->ofMany();
+        return $this->hasOne(Credential::class)->ofMany();
     }
 }

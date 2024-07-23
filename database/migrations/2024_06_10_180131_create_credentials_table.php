@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('a_w_s_credentials', function (Blueprint $table) {
+        Schema::create('credentials', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('access_key_id');
             $table->string('access_key_secret');

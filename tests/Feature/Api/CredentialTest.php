@@ -2,18 +2,18 @@
 
 namespace Tests\Feature\Api;
 
-use App\Models\AWSCredential;
+use App\Models\Credential;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AWSCredentialTest extends TestCase
+class CredentialTest extends TestCase
 {
     use RefreshDatabase;
 
-    const PATH = 'api/aws-credential';
+    const PATH = 'api/credentials';
 
-    public function testAWSCredentialCanBeCreated(): void
+    public function testCredentialCanBeCreated(): void
     {
         $user = User::factory()->create();
 
@@ -31,31 +31,31 @@ class AWSCredentialTest extends TestCase
             ]);
     }
 
-    public function testAWSCredentialCanBeShowed(): void
+    public function testCredentialCanBeShowed(): void
     {
         $user = User::factory()->create();
-        $awsCredential = AWSCredential::factory()->forUser($user)->create();
+        $credential = Credential::factory()->forUser($user)->create();
 
         $response = $this
             ->actingAs($user)
-            ->get(self::PATH.'/'.$awsCredential->id);
+            ->get(self::PATH.'/'.$credential->id);
 
         $response
             ->assertOk()
             ->assertJson([
-                'id' => $awsCredential->id,
-                'access_key_id' => $awsCredential->access_key_id,
+                'id' => $credential->id,
+                'access_key_id' => $credential->access_key_id,
             ]);
     }
 
-    public function testAWSCredentialCanBeUpdated(): void
+    public function testCredentialCanBeUpdated(): void
     {
         $user = User::factory()->create();
-        $awsCredential = AWSCredential::factory()->forUser($user)->create();
+        $credential = Credential::factory()->forUser($user)->create();
 
         $response = $this
             ->actingAs($user)
-            ->patch(self::PATH.'/'.$awsCredential->id, [
+            ->patch(self::PATH.'/'.$credential->id, [
                 'access_key_id' => 'key-updated',
                 'access_key_secret' => 'secret-updated',
             ]);
@@ -67,28 +67,28 @@ class AWSCredentialTest extends TestCase
             ]);
     }
 
-    public function testAWSCredentialCanBeDeleted(): void
+    public function testCredentialCanBeDeleted(): void
     {
         $user = User::factory()->create();
-        $awsCredential = AWSCredential::factory()->forUser($user)->create();
+        $credential = Credential::factory()->forUser($user)->create();
 
         $response = $this
             ->actingAs($user)
-            ->delete(self::PATH.'/'.$awsCredential->id);
+            ->delete(self::PATH.'/'.$credential->id);
 
         $response->assertOk();
 
-        $this->assertDatabaseMissing(AWSCredential::class, $awsCredential->toArray());
+        $this->assertDatabaseMissing(Credential::class, $credential->toArray());
     }
 
-    public function testAWSCredentialNotCanBeShowedIfIsFromOtherUser(): void
+    public function testCredentialNotCanBeShowedIfIsFromOtherUser(): void
     {
         $user = User::factory()->create();
-        $awsCredential = AWSCredential::factory()->create();
+        $credential = Credential::factory()->create();
 
         $response = $this
             ->actingAs($user)
-            ->get(self::PATH.'/'.$awsCredential->id);
+            ->get(self::PATH.'/'.$credential->id);
 
         $response->assertNotFound();
     }

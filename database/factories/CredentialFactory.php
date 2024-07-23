@@ -6,9 +6,9 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AWSCredential>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\<Credential>
  */
-class AWSCredentialFactory extends Factory
+class CredentialFactory extends Factory
 {
     public function definition(): array
     {
@@ -21,7 +21,7 @@ class AWSCredentialFactory extends Factory
 
     public function forUser(User $user): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn () => [
             'user_id' => $user,
         ]);
     }

@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    @if (Auth::user()->has('awsCredential')->exists())
+                    @if (Auth::user()->has('credential')->exists())
                         <message :closable="false">Keys Config</message>
                     @else
                         <access-key-form></access-key-form>

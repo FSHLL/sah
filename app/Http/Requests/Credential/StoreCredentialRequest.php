@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\AWSCredential;
+namespace App\Http\Requests\Credential;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAWSCredentialRequest extends FormRequest
+class StoreCredentialRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.

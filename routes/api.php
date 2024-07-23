@@ -13,3 +13,4 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('aws-credentials', AWSCredentialController::class)->middleware('auth:sanctum');
 Route::apiResource('projects', ProjectController::class)->middleware('auth:sanctum');
 Route::apiResource('stacks', StackController::class)->middleware('auth:sanctum')->only('index');
+Route::get('stacks/project/{project}', [StackController::class, 'project'])->middleware('auth:sanctum');

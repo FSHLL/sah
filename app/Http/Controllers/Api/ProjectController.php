@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
 use App\Models\Project;
+use App\Services\StackService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Response;
@@ -30,7 +31,7 @@ class ProjectController extends Controller
         );
     }
 
-    public function show(Project $project): JsonResponse
+    public function show(Project $project, StackService $stackService): JsonResponse
     {
         return Response::json($project);
     }

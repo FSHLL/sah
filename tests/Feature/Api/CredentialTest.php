@@ -13,6 +13,40 @@ class CredentialTest extends TestCase
 
     const PATH = 'api/credentials';
 
+    public function testCredentialsCanBeListed(): void
+    {
+        $user = User::factory()->create();
+
+        Credential::factory()->forUser($user)->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->get(self::PATH);
+
+        $response
+            ->assertOk()
+            ->assertJson([
+                'total' => 1
+            ]);
+    }
+
+    public function testCredentialsCanListsOnlyUserCreated(): void
+    {
+        $user = User::factory()->create();
+
+        Credential::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->get(self::PATH);
+
+        $response
+            ->assertOk()
+            ->assertJson([
+                'total' => 0
+            ]);
+    }
+
     public function testCredentialCanBeCreated(): void
     {
         $user = User::factory()->create();

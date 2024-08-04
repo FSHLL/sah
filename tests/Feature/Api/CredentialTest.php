@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use App\Enums\CredentialType;
 use App\Models\Credential;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,7 +27,7 @@ class CredentialTest extends TestCase
         $response
             ->assertOk()
             ->assertJson([
-                'total' => 1
+                'total' => 1,
             ]);
     }
 
@@ -43,7 +44,7 @@ class CredentialTest extends TestCase
         $response
             ->assertOk()
             ->assertJson([
-                'total' => 0
+                'total' => 0,
             ]);
     }
 
@@ -51,17 +52,21 @@ class CredentialTest extends TestCase
     {
         $user = User::factory()->create();
 
+        $settings = [
+            'access_key_id' => 'key',
+            'access_key_secret' => 'secret',
+            'region' => 'us-east-1',
+        ];
+
         $response = $this
             ->actingAs($user)
-            ->post(self::PATH, [
-                'access_key_id' => 'key',
-                'access_key_secret' => 'secret',
-            ]);
+            ->post(self::PATH, $settings);
 
         $response
             ->assertCreated()
             ->assertJson([
-                'access_key_id' => 'key'
+                'type' => CredentialType::AWS->value,
+                'user_id' => $user->id,
             ]);
     }
 
@@ -78,7 +83,8 @@ class CredentialTest extends TestCase
             ->assertOk()
             ->assertJson([
                 'id' => $credential->id,
-                'access_key_id' => $credential->access_key_id,
+                'type' => CredentialType::AWS->value,
+                'user_id' => $user->id,
             ]);
     }
 
@@ -92,12 +98,14 @@ class CredentialTest extends TestCase
             ->patch(self::PATH.'/'.$credential->id, [
                 'access_key_id' => 'key-updated',
                 'access_key_secret' => 'secret-updated',
+                'region' => 'us-east-1',
             ]);
 
         $response
             ->assertOk()
             ->assertJson([
-                'access_key_id' => 'key-updated',
+                'type' => CredentialType::AWS->value,
+                'user_id' => $user->id,
             ]);
     }
 
@@ -112,7 +120,7 @@ class CredentialTest extends TestCase
 
         $response->assertOk();
 
-        $this->assertDatabaseMissing(Credential::class, $credential->toArray());
+        $this->assertDatabaseMissing(Credential::class, $credential->only(['id']));
     }
 
     public function testCredentialNotCanBeShowedIfIsFromOtherUser(): void

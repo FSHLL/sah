@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Credential\StoreOrUpdateCredential;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Credential\StoreCredentialRequest;
 use App\Http\Requests\Credential\UpdateCredentialRequest;
@@ -10,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Response;
 
-class CredentialController extends Controller
+class CredentialsController extends Controller
 {
     public function index(): JsonResponse
     {
@@ -19,13 +20,10 @@ class CredentialController extends Controller
         );
     }
 
-    public function store(StoreCredentialRequest $request): JsonResponse
+    public function store(StoreCredentialRequest $request, StoreOrUpdateCredential $storeCredential): JsonResponse
     {
         return Response::json(
-            Credential::create([
-                ...$request->validated(),
-                'user_id' => auth()->user()->getAuthIdentifier(),
-            ]),
+            $storeCredential->handle($request),
             HttpResponse::HTTP_CREATED
         );
     }
@@ -35,11 +33,10 @@ class CredentialController extends Controller
         return Response::json($credential);
     }
 
-    public function update(UpdateCredentialRequest $request, Credential $credential): JsonResponse
+    public function update(UpdateCredentialRequest $request, Credential $credential, StoreOrUpdateCredential $updateCredential): JsonResponse
     {
-        $credential->update($request->validated());
         return Response::json(
-            $credential->fresh()
+            $updateCredential->handle($request, $credential),
         );
     }
 

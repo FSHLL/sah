@@ -11,9 +11,8 @@ return new class extends Migration
     {
         Schema::create('credentials', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('access_key_id');
-            $table->string('access_key_secret');
             $table->enum('type', CredentialType::values())->default(CredentialType::AWS->value);
+            $table->text('settings');
             $table->foreignUuid('user_id');
             $table->timestamps();
         });

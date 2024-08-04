@@ -2,20 +2,16 @@
 
 namespace App\Http\Requests\Credential;
 
+use App\Enums\CredentialType;
+use App\Factories\CredentialSettingsFactory;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCredentialRequest extends FormRequest
 {
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
-        return [
-            'access_key_id' => ['required', 'string', 'max:120'],
-            'access_key_secret' => ['required', 'string', 'max:120'],
-        ];
+        $rules = CredentialSettingsFactory::create($this->input('type', CredentialType::AWS->value))->getRules();
+
+        return array_map(fn (array $rul) => ['required', ...$rul], $rules);
     }
 }

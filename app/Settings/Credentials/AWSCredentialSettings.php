@@ -2,7 +2,9 @@
 
 namespace App\Settings\Credentials;
 
+use App\Enums\AWSRegion;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\Rule;
 
 class AWSCredentialSettings extends CredentialSettings
 {
@@ -22,7 +24,7 @@ class AWSCredentialSettings extends CredentialSettings
         return [
             'access_key_id' => ['string', 'max:120'],
             'access_key_secret' => ['string', 'max:120'],
-            'region' => ['string', 'max:120'],
+            'region' => ['string', Rule::in(AWSRegion::values())],
         ];
     }
 }

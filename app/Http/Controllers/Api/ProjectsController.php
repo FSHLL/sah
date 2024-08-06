@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Response;
 
-class ProjectController extends Controller
+class ProjectsController extends Controller
 {
     public function index(): JsonResponse
     {

@@ -8,7 +8,7 @@ use App\Services\StackService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 
-class StackController extends Controller
+class StacksController extends Controller
 {
     public function index(StackService $stackService): JsonResponse
     {

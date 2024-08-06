@@ -21,7 +21,7 @@ class Credential extends Model
 
     protected $hidden = [
         'access_key_secret',
-        // 'settings',
+        'settings',
     ];
 
     protected function casts()

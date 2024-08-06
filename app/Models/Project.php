@@ -17,12 +17,12 @@ class Project extends Model
         'name',
         'stack_id',
         'user_id',
-        'a_w_s_credential_id',
+        'credential_id',
     ];
 
-    public function awsCredential(): BelongsTo
+    public function credential(): HasOne
     {
-        return $this->belongsTo(AWSCredential::class);
+        return $this->hasOne(Credential::class);
     }
 
     public function deploys(): HasMany

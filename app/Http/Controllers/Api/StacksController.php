@@ -13,7 +13,7 @@ class StacksController extends Controller
     public function index(StackService $stackService): JsonResponse
     {
         return Response::json(
-            $stackService->getStacks(auth()->user()->awsCredential)->get('StackSummaries')
+            $stackService->getStacks(auth()->user()->credential)->get('StackSummaries')
         );
     }
 

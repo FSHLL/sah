@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasUuids, HasFactory, Notifiable;
+    use HasFactory, HasUuids, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -48,8 +48,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function awsCredential(): HasOne
+    public function credential(): HasOne
     {
-        return $this->hasOne(AWSCredential::class)->ofMany();
+        return $this->hasOne(Credential::class)->ofMany();
     }
 }

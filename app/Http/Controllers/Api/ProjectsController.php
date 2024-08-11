@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Factories\StackServiceFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
 use App\Models\Project;
-use App\Services\StackService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Response;
@@ -31,7 +31,7 @@ class ProjectsController extends Controller
         );
     }
 
-    public function show(Project $project, StackService $stackService): JsonResponse
+    public function show(Project $project): JsonResponse
     {
         return Response::json($project);
     }
@@ -47,5 +47,11 @@ class ProjectsController extends Controller
     public function destroy(Project $project): JsonResponse
     {
         return Response::json($project->delete());
+    }
+
+    public function stack(Project $project): JsonResponse
+    {
+        $stackService = StackServiceFactory::create($project->credential->type->value);
+        return Response::json($stackService->getProjectStackInfo($project));
     }
 }

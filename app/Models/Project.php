@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Project extends Model
 {
@@ -20,9 +19,9 @@ class Project extends Model
         'credential_id',
     ];
 
-    public function credential(): HasOne
+    public function credential(): BelongsTo
     {
-        return $this->hasOne(Credential::class);
+        return $this->belongsTo(Credential::class);
     }
 
     public function deploys(): HasMany

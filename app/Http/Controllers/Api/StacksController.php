@@ -2,23 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Factories\StackServiceFactory;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
-use App\Services\StackService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 
 class StacksController extends Controller
 {
-    public function index(StackService $stackService): JsonResponse
+    public function index(): JsonResponse
     {
+        $stackService = StackServiceFactory::create(auth()->user()->credential->type->value);
         return Response::json(
-            $stackService->getStacks(auth()->user()->credential)->get('StackSummaries')
+            $stackService->getStacks(auth()->user()->credential)
         );
-    }
-
-    public function project(Project $project, StackService $stackService): JsonResponse
-    {
-        return Response::json($stackService->getProjectStackInfo($project));
     }
 }

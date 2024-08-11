@@ -13,7 +13,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->enum('type', CredentialType::values())->default(CredentialType::AWS->value);
             $table->text('settings');
-            $table->foreignUuid('user_id');
+            $table->foreignUuid('user_id')->constrained();
             $table->timestamps();
         });
     }

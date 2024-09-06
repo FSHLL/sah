@@ -22,7 +22,7 @@ class StoreOrUpdateCredential
 
         $credential->type = $type;
         $credential->settings = $credentialSettings;
-        $credential->user_id = auth()->user()->getAuthIdentifier();
+        $credential->user_id = auth()->id();
 
         $credential->save();
 

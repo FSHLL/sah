@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Project;
 use App\Models\Credential;
+use App\Models\Project;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 

@@ -12,6 +12,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('stack_id', 250)->unique();
+            $table->text('stack_resources');
             $table->foreignUuid('user_id')->constrained();
             $table->foreignUuid('credential_id')->constrained();
             $table->timestamps();

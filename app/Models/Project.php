@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
-    use HasUuids, HasFactory;
+    use HasFactory, HasUuids;
 
     protected $fillable = [
         'name',
         'stack_id',
+        'stack_resources',
         'user_id',
         'credential_id',
     ];
@@ -27,5 +28,12 @@ class Project extends Model
     public function deploys(): HasMany
     {
         return $this->hasMany(Deploy::class);
+    }
+
+    protected function casts()
+    {
+        return [
+            'stack_resources' => 'array',
+        ];
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\AWSCredential;
+use App\Models\Credential;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,7 +17,7 @@ class ProjectFactory extends Factory
             'name' => $this->faker->text(10),
             'stack_id' => $this->faker->text(10),
             'user_id' => User::factory(),
-            'a_w_s_credential_id' => AWSCredential::factory(),
+            'credential_id' => Credential::factory(),
         ];
     }
 

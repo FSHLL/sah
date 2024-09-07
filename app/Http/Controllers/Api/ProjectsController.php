@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Factories\StackServiceFactory;
+use App\Actions\Credential\StoreOrUpdateProject;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
@@ -20,13 +20,10 @@ class ProjectsController extends Controller
         );
     }
 
-    public function store(StoreProjectRequest $request)
+    public function store(StoreProjectRequest $request, StoreOrUpdateProject $storeOrUpdateProject): JsonResponse
     {
         return Response::json(
-            Project::create([
-                ...$request->validated(),
-                'user_id' => auth()->user()->getAuthIdentifier(),
-            ]),
+            $storeOrUpdateProject->handle($request),
             HttpResponse::HTTP_CREATED
         );
     }
@@ -36,22 +33,13 @@ class ProjectsController extends Controller
         return Response::json($project);
     }
 
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(UpdateProjectRequest $request, Project $project, StoreOrUpdateProject $storeOrUpdateProject): JsonResponse
     {
-        $project->update($request->validated());
-        return Response::json(
-            $project->fresh()
-        );
+        return Response::json($storeOrUpdateProject->handle($request, $project));
     }
 
     public function destroy(Project $project): JsonResponse
     {
         return Response::json($project->delete());
-    }
-
-    public function stack(Project $project): JsonResponse
-    {
-        $stackService = StackServiceFactory::create($project->credential->type->value);
-        return Response::json($stackService->getProjectStackInfo($project));
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Api;
 
-use App\Models\AWSCredential;
+use App\Models\Credential;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,14 +18,14 @@ class ProjectTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $user = User::factory()->create();
-        $awsCredential = AWSCredential::factory()->forUser($user)->create();
+        $Credential = Credential::factory()->forUser($user)->create();
 
         $response = $this
             ->actingAs($user)
             ->post(self::PATH, [
                 'name' => 'my app',
                 'stack_id' => 'id',
-                'a_w_s_credential_id' => $awsCredential->id,
+                'credential_id' => $Credential->id,
                 'user_id' => $user->id,
             ]);
 

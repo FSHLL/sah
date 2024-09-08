@@ -17,6 +17,7 @@ import inputswitch from './inputswitch';
 import inputtext from './inputtext';
 import knob from './knob';
 import listbox from './listbox';
+import select from './select';
 import multiselect from './multiselect';
 import password from './password';
 import radiobutton from './radiobutton';
@@ -112,6 +113,7 @@ export default {
     inputtext,
     knob,
     listbox,
+    select,
     multiselect,
     password,
     radiobutton,

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('deployments', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('project_id')->constrained();
             $table->text('stack_resources');
             $table->timestamps();

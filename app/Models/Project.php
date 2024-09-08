@@ -28,7 +28,7 @@ class Project extends Model
 
     public function deployments(): HasMany
     {
-        return $this->hasMany(Deploy::class);
+        return $this->hasMany(Deployment::class);
     }
 
     protected function casts(): array

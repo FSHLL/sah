@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Credential;
+namespace App\Actions\Project;
 
 use App\Factories\StackResourcesFactory;
 use App\Factories\StackServiceFactory;

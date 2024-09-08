@@ -2,6 +2,7 @@
 
 namespace App\Actions\Credential;
 
+use App\Factories\StackResourcesFactory;
 use App\Factories\StackServiceFactory;
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
@@ -19,7 +20,11 @@ class StoreOrUpdateProject
         $project->user_id = auth()->id();
 
         $stackService = StackServiceFactory::create($project->credential->type->value);
-        $project->stack_resources = $stackService->getStack($project->credential, $project->stack_id)->toArray();
+
+        $project->stack_resources = StackResourcesFactory::create(
+            $project->credential->type->value,
+            $stackService->getStack($project->credential, $project->stack_id)->toArray()
+        );
 
         $project->save();
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\StackResources;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,15 +26,15 @@ class Project extends Model
         return $this->belongsTo(Credential::class);
     }
 
-    public function deploys(): HasMany
+    public function deployments(): HasMany
     {
         return $this->hasMany(Deploy::class);
     }
 
-    protected function casts()
+    protected function casts(): array
     {
         return [
-            'stack_resources' => 'array',
+            'stack_resources' => StackResources::class,
         ];
     }
 }

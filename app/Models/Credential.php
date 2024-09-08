@@ -24,7 +24,7 @@ class Credential extends Model
         'settings',
     ];
 
-    protected function casts()
+    protected function casts(): array
     {
         return [
             'settings' => CredentialSettings::class,

@@ -8,10 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('deploys', function (Blueprint $table) {
+        Schema::create('deployments', function (Blueprint $table) {
             $table->id();
             $table->foreignUuid('project_id')->constrained();
-            $table->string('status');
+            $table->text('stack_resources');
             $table->timestamps();
         });
     }

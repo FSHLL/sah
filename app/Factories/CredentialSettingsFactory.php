@@ -12,7 +12,7 @@ class CredentialSettingsFactory
     {
         return match ($type) {
             CredentialType::AWS->value => new AWSCredentialSettings,
-            default => throw new \InvalidArgumentException('Invalid payment processor'),
+            default => throw new \InvalidArgumentException('Invalid credential type'),
         };
     }
 }

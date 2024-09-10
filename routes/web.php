@@ -12,6 +12,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('projects', fn () => view('project.index'))->name('projects');
+    Route::get('projects/{any}', fn () => view('project.index'))->where('any', '.*');
 });
 
 require __DIR__.'/auth.php';

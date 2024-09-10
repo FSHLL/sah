@@ -7,6 +7,7 @@ import AccessKeyForm from './components/credentials/AWS/AccessKeyForm.vue'
 import Aura from './presets/aura'
 import Message from 'primevue/message';
 import ToastService from 'primevue/toastservice';
+import ConfirmationService from 'primevue/confirmationservice';
 
 const app = createApp()
 
@@ -23,6 +24,7 @@ app.use(PrimeVue, {
     pt: Aura
 });
 app.use(ToastService)
+app.use(ConfirmationService)
 
 app.component('theme', Theme)
 app.component('access-key-form', AccessKeyForm)

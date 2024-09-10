@@ -11,7 +11,6 @@ class UpdateProjectRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:120'],
             'stack_id' => ['string'],
-            'credential_id' => ['uuid', 'exists:credentials,id'],
         ];
     }
 }

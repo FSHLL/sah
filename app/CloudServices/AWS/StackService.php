@@ -9,11 +9,11 @@ use Aws\Sdk;
 
 class StackService implements StackServiceContract
 {
-    public function getStacks(Credential $credential): Result
+    public function getStacks(Credential $credential): array
     {
         $client = (new Sdk($credential->settings->getSettings()))->createCloudFormation();
 
-        return $client->listStacks();
+        return $client->listStacks()->get('StackSummaries');
     }
 
     public function getStack(Credential $credential, string $stackId): Result

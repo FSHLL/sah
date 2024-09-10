@@ -40,6 +40,8 @@ class ProjectsController extends Controller
 
     public function destroy(Project $project): JsonResponse
     {
+        $project->deployments()->delete();
+
         return Response::json($project->delete());
     }
 }

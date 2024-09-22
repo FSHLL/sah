@@ -34,9 +34,9 @@ class FunctionService implements FunctionServiceContract
         $client = (new Sdk($credential->settings->getSettings()))->createLambda();
 
         return $client->updateAlias([
-            'FunctionName' => $function,
             'Name' => $alias,
-            'version' => $version,
+            'FunctionName' => $function,
+            'FunctionVersion' => $version,
         ]);
     }
 

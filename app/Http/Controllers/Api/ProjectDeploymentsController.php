@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Deployment\RollbackDeploymentAction;
 use App\Actions\Deployment\StoreDeploymentAction;
 use App\Http\Controllers\Controller;
 use App\Models\Deployment;
@@ -25,8 +26,13 @@ class ProjectDeploymentsController extends Controller
         );
     }
 
-    public function show(Deployment $deploy)
+    public function show(Deployment $deployment): JsonResponse
     {
-        return Response::json($deploy);
+        return Response::json($deployment);
+    }
+
+    public function rollback(Project $project, Deployment $deployment, RollbackDeploymentAction $rollbackDeploymentAction): JsonResponse
+    {
+        return Response::json($rollbackDeploymentAction->handle($deployment));
     }
 }

@@ -15,3 +15,4 @@ Route::apiResource('credentials', CredentialsController::class)->middleware('aut
 Route::apiResource('projects', ProjectsController::class)->middleware('auth:sanctum');
 Route::apiResource('stacks', StacksController::class)->middleware('auth:sanctum')->only('index');
 Route::apiResource('projects.deployments', ProjectDeploymentsController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
+Route::put('projects/{project}/deployments/{deployment}/rollback', [ProjectDeploymentsController::class, 'rollback'])->middleware('auth:sanctum');

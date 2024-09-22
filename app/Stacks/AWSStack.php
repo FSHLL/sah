@@ -17,9 +17,14 @@ class AWSStack extends StackBase
         return JmesPath::search("StackResourceSummaries[?ResourceType == 'AWS::Lambda::Alias'].PhysicalResourceId", $this->stack);
     }
 
-    public function getVersion(): array
+    public function getVersions(): array
     {
         return JmesPath::search("StackResourceSummaries[?ResourceType == 'AWS::Lambda::Version'].PhysicalResourceId", $this->stack);
+    }
+
+    public function getTriggers(): array
+    {
+        return JmesPath::search('Triggers[*].Statement[].{function: Resource, Service: Principal.Service}', $this->stack);
     }
 
     public function aliasSync(): bool

@@ -4,6 +4,7 @@ namespace App\Actions\Deployment;
 
 use App\Factories\StackResourcesFactory;
 use App\Factories\StackServiceFactory;
+use App\Jobs\UpdateStackResourcesInfo;
 use App\Models\Deployment;
 use App\Models\Project;
 
@@ -17,15 +18,15 @@ class StoreDeploymentAction
 
         $deploy->project_id = $project->id;
 
+        UpdateStackResourcesInfo::dispatch($project);
+
         $stack_resources = StackResourcesFactory::create(
             $project->credential->type->value,
             $stackService->getStack($project->credential, $project->stack_id)->toArray()
         );
 
-        $project->stack_resources = $stack_resources;
         $deploy->stack_resources = json_encode($stack_resources->getStack());
 
-        $project->save();
         $deploy->save();
 
         return $deploy;

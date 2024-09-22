@@ -21,10 +21,10 @@ class Credential extends Model
 
     protected $hidden = [
         'access_key_secret',
-        // 'settings',
+        'settings',
     ];
 
-    protected function casts()
+    protected function casts(): array
     {
         return [
             'settings' => CredentialSettings::class,

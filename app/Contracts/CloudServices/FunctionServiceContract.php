@@ -3,7 +3,6 @@
 namespace App\Contracts\CloudServices;
 
 use App\Models\Credential;
-use App\Models\Project;
 
 interface FunctionServiceContract
 {
@@ -15,7 +14,5 @@ interface FunctionServiceContract
 
     public function getTriggers(Credential $credential, string $function, ?string $qualifier = null);
 
-    public function listAliasesFromProject(Project $project);
-
-    // public function listAliasesFromProject(Project $project);
+    public function getAliasVersion(Credential $credential, string $function, string $alias);
 }

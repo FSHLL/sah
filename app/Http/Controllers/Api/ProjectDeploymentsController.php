@@ -15,7 +15,7 @@ class ProjectDeploymentsController extends Controller
 {
     public function index(Project $project): JsonResponse
     {
-        return Response::json($project->deployments()->paginate());
+        return Response::json($project->deployments()->latest()->paginate());
     }
 
     public function store(Project $project, StoreDeploymentAction $storeDeployAction): JsonResponse

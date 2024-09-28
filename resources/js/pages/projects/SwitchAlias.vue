@@ -1,5 +1,5 @@
 <template>
-    <Button icon="pi-arrow-right-arrow-left" severity="secondary" rounded text @click="visible = true" />
+    <Button icon="pi pi-arrows-v" severity="secondary" rounded text @click="visible = true" />
     <Dialog v-model:visible="visible" modal header="Switch Version" :style="{ width: '25rem' }">
         <div class="card">
             <div v-for="(data, func) in functions" :key="func" class="flex items-center gap-4 mb-4">

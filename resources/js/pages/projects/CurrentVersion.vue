@@ -1,9 +1,11 @@
 <template>
-    <h4>{{ version }}</h4>
+    <em v-if="loading" class="pi pi-spin pi-spinner"></em>
+    <Tag v-else severity="Secondary" :value="version"></Tag>
 </template>
 <script setup>
 import axios from 'axios';
-import { onMounted, ref, watch } from 'vue';
+import Tag from 'primevue/tag';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 const props = defineProps({
@@ -38,12 +40,12 @@ const loadVersion = async () => {
     }
 }
 
-watch(() => props.update, () => {
-    loadVersion();
-});
-
 onMounted(() => {
     loadVersion()
+})
+
+defineExpose({
+    loadVersion
 })
 
 </script>

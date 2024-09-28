@@ -16,7 +16,7 @@
                             role="button"
                             class="text-slate-800 flex w-full items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
                         >
-                            {{ func.label }} - <current-version :function="func.label"/>
+                            {{ func.label }} - <current-version :ref="setVersionRef" :function="func.label"/>
                         </div>
                     </nav>
                 </SplitterPanel>
@@ -73,7 +73,7 @@ import { useConfirm } from "primevue/useconfirm";
     const deployLoading = ref(false)
     const deployments = ref([])
     const functionsMapped = ref([])
-    const updateVersion = ref(false)
+    const currentVersions = ref([])
 
     const selectedFunction = ref(0)
 
@@ -167,12 +167,16 @@ import { useConfirm } from "primevue/useconfirm";
         try {
             deployLoading.value = true
             await axios.put(`/api/projects/${route.params.id}/deployments/${deployment.id}/rollback`);
-            updateVersion.value = !updateVersion.value
+            currentVersions.value.forEach((cv) => cv.loadVersion())
         } catch (error) {
             console.log(error);
         } finally {
             deployLoading.value = false;
         }
+    }
+
+    const setVersionRef = (el) => {
+        currentVersions.value.push(el);
     }
 
     onMounted(() => {

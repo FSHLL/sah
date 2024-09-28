@@ -8,10 +8,10 @@
             </div>
             <div class="flex items-center gap-4 mb-8">
                 <label for="email" class="font-semibold w-24">Stack</label>
-                <Select v-model="project.stack" :options="stacks" optionLabel="StackName" placeholder="Select a Stack" class="flex-auto" />
+                <Select v-model="project.stack" :options="stacks" filter optionLabel="StackName" placeholder="Select a Stack" class="flex-auto" />
             </div>
             <div class="flex justify-end gap-2">
-                <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
+                <Button type="button" label="Cancel" severity="secondary" @click="visible = false" :loading="loading"></Button>
                 <Button type="button" label="Save" @click="createProject"></Button>
             </div>
         </Dialog>
@@ -47,7 +47,7 @@ import axios from 'axios';
     const createProject= async () => {
         try {
             loading.value = true;
-            const response = await axios.post('/api/projects', {
+            await axios.post('/api/projects', {
                 name: project.value.name,
                 stack_id: project.value.stack.StackId,
             });

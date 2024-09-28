@@ -2,7 +2,7 @@
     <ConfirmPopup></ConfirmPopup>
     <Panel :header="project.name">
         <template #icons>
-            <Button icon="pi pi-cog" severity="secondary" rounded text />
+            <SwitchAlias @versions-updated="updateVersions"></SwitchAlias>
         </template>
         <Message v-if="!hasAliases" severity="warn">No Alias created for this project</Message>
         <Message v-if="project.stack_resources?.alias_sync" severity="info">Alias Sync</Message>
@@ -64,6 +64,7 @@ import CurrentVersion from './CurrentVersion.vue';
 import Splitter from 'primevue/splitter';
 import SplitterPanel from 'primevue/splitterpanel';
 import ConfirmPopup from "primevue/confirmpopup";
+import SwitchAlias from './SwitchAlias.vue';
 
 import { useRoute } from "vue-router";
 import { useConfirm } from "primevue/useconfirm";
@@ -167,7 +168,7 @@ import { useConfirm } from "primevue/useconfirm";
         try {
             deployLoading.value = true
             await axios.put(`/api/projects/${route.params.id}/deployments/${deployment.id}/rollback`);
-            currentVersions.value.forEach((cv) => cv.loadVersion())
+            updateVersions()
         } catch (error) {
             console.log(error);
         } finally {
@@ -177,6 +178,10 @@ import { useConfirm } from "primevue/useconfirm";
 
     const setVersionRef = (el) => {
         currentVersions.value.push(el);
+    }
+
+    const updateVersions = () => {
+        currentVersions.value.forEach((cv) => cv.loadVersion())
     }
 
     onMounted(() => {

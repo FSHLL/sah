@@ -58,4 +58,19 @@ class FunctionService implements FunctionServiceContract
             'FunctionName' => $function,
         ])->get('FunctionVersion');
     }
+
+    public function listVersionsByFunction(Credential $credential, string|array $function): array
+    {
+        $client = (new Sdk($credential->settings->getSettings()))->createLambda();
+
+        if (is_string($function)) {
+            $functions[$function]['versions'] = $client->listVersionsByFunction(['FunctionName' => $function])->search('Versions[*].Version');
+        } else {
+            foreach ($function as $fun) {
+                $functions[$fun]['versions'] = $client->listVersionsByFunction(['FunctionName' => $fun])->search('Versions[*].Version');
+            }
+        }
+
+        return $functions;
+    }
 }

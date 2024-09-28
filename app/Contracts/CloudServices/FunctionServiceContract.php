@@ -15,4 +15,6 @@ interface FunctionServiceContract
     public function getTriggers(Credential $credential, string $function, ?string $qualifier = null);
 
     public function getAliasVersion(Credential $credential, string $function, string $alias);
+
+    public function listVersionsByFunction(Credential $credential, string|array $function);
 }

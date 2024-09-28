@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Project\StoreOrUpdateProject;
+use App\Actions\Project\UpdateVersions;
 use App\Factories\FunctionServiceFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
+use App\Http\Requests\Project\UpdateVersionsRequest;
 use App\Models\Project;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -54,5 +56,17 @@ class ProjectsController extends Controller
         return Response::json(
             $functionService->getAliasVersion($project->credential, $request->input('function'), 'ACTIVE')
         );
+    }
+
+    public function versions(Project $project): JsonResponse
+    {
+        $functionService = FunctionServiceFactory::create($project->credential->type->value);
+
+        return Response::json($functionService->listVersionsByFunction($project->credential, $project->stack_resources->getFunctions()));
+    }
+
+    public function updateVersions(Project $project, UpdateVersionsRequest $request, UpdateVersions $updateVersions): JsonResponse
+    {
+        return Response::json($updateVersions->handle($request, $project));
     }
 }

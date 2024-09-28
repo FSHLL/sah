@@ -3,6 +3,20 @@
     <Panel :header="project.name">
         <template #icons>
             <SwitchAlias @versions-updated="updateVersions"></SwitchAlias>
+            <Button icon="pi pi-send" severity="secondary" rounded text @click="toggle" />
+            <Popover ref="op">
+                <div class="flex flex-col gap-4 w-[25rem]">
+                    <div>
+                        <span class="font-medium block mb-2">Deploy project URL</span>
+                        <InputGroup>
+                            <InputText v-on:focus="$event.target.select()" :value="getProjectURL()" readonly class="w-[25rem]"></InputText>
+                            <InputGroupAddon>
+                                <em class="pi pi-copy" @click="copy"></em>
+                            </InputGroupAddon>
+                        </InputGroup>
+                    </div>
+                </div>
+            </Popover>
         </template>
         <Message v-if="!hasAliases" severity="warn">No Alias created for this project</Message>
         <Message v-if="project.stack_resources?.alias_sync" severity="info">Alias Sync</Message>
@@ -65,6 +79,9 @@ import Splitter from 'primevue/splitter';
 import SplitterPanel from 'primevue/splitterpanel';
 import ConfirmPopup from "primevue/confirmpopup";
 import SwitchAlias from './SwitchAlias.vue';
+import Popover from 'primevue/popover';
+import InputText from 'primevue/inputtext';
+import InputGroupAddon from 'primevue/inputgroupaddon';
 
 import { useRoute } from "vue-router";
 import { useConfirm } from "primevue/useconfirm";
@@ -77,6 +94,7 @@ import { useConfirm } from "primevue/useconfirm";
     const currentVersions = ref([])
 
     const selectedFunction = ref(0)
+    const op = ref();
 
     const hasAliases = computed(() => project.value.stack_resources?.functions.some((f) => f.alias))
 
@@ -182,6 +200,19 @@ import { useConfirm } from "primevue/useconfirm";
 
     const updateVersions = () => {
         currentVersions.value.forEach((cv) => cv.loadVersion())
+    }
+
+
+    const getProjectURL = () => {
+        return `${window.location.origin}/api/projects/${route.params.id}/deploy`
+    }
+
+    const toggle = (event) => {
+        op.value.toggle(event);
+    }
+
+    const copy = async () => {
+        await navigator.clipboard.writeText(getProjectURL());
     }
 
     onMounted(() => {

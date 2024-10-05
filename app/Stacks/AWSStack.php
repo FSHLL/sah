@@ -24,7 +24,7 @@ class AWSStack extends StackBase
 
     public function getTriggers(): array
     {
-        return JmesPath::search('Triggers[*].Statement[].{function: Resource, Service: Principal.Service}', $this->stack);
+        return JmesPath::search('Triggers[*].Statement[].{function: Resource, Service: Principal.Service}', $this->stack) ?? [];
     }
 
     public function aliasSync(): bool

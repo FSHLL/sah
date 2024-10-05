@@ -1,23 +1,49 @@
 <template>
+    <ConfirmPopup></ConfirmPopup>
     <Panel :header="project.name">
+        <template #icons>
+            <SwitchAlias @versions-updated="updateVersions"></SwitchAlias>
+            <Button icon="pi pi-send" severity="secondary" rounded text @click="toggle" />
+            <Popover ref="op">
+                <div class="flex flex-col gap-4 w-[25rem]">
+                    <div>
+                        <span class="font-medium block mb-2">Deploy project URL</span>
+                        <InputGroup>
+                            <InputText v-on:focus="$event.target.select()" :value="getProjectURL()" readonly class="w-[25rem]"></InputText>
+                            <InputGroupAddon>
+                                <em class="pi pi-copy" @click="copy"></em>
+                            </InputGroupAddon>
+                        </InputGroup>
+                    </div>
+                </div>
+            </Popover>
+        </template>
         <Message v-if="!hasAliases" severity="warn">No Alias created for this project</Message>
         <Message v-if="project.stack_resources?.alias_sync" severity="info">Alias Sync</Message>
         <br>
         <div class="card">
-            <Tabs :value="0">
-                <TabList v-for="(func, index) in functionsMapped" :key="func.label">
-                    <Tab :value="index">{{ func.label }}</Tab>
-                </TabList>
-                <TabPanels>
-                    <TabPanel v-for="(func, index) in functionsMapped" :key="func.children" :value="index">
-                        <OrganizationChart :value="func">
+            <Splitter style="height: 300px">
+                <SplitterPanel class="flex items-center justify-center" :size="25" :minSize="10">
+                    <nav class="flex min-w-[240px] flex-col gap-1 p-1.5">
+                        <div
+                            v-for="(func, index) in functionsMapped" :key="func.label" @click="selectedFunction = index"
+                            role="button"
+                            class="text-slate-800 flex w-full items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
+                        >
+                            {{ func.label }} - <current-version :ref="setVersionRef" :function="func.label"/>
+                        </div>
+                    </nav>
+                </SplitterPanel>
+                <SplitterPanel class="flex items-center justify-center" :size="75">
+                    <div v-for="(func, index) in functionsMapped" :key="func.children">
+                        <OrganizationChart :value="func" v-if="selectedFunction === index">
                             <template #default="slotProps">
                                 <span>{{ slotProps.node.label }}</span>
                             </template>
                         </OrganizationChart>
-                    </TabPanel>
-                </TabPanels>
-            </Tabs>
+                    </div>
+                </SplitterPanel>
+            </Splitter>
         </div>
         <Divider/>
         <Card>
@@ -26,6 +52,11 @@
                 <DataTable :loading="loading" :value="deployments.data" tableStyle="min-width: 50rem">
                     <template #empty> No deployments found. </template>
                     <Column v-for="col of columns" :key="col.key" :field="col.dataIndex" :header="col.title"></Column>
+                    <Column header="Action">
+                        <template #body="slotProps">
+                            <Button @click="confirmRollback($event, slotProps.data)" severity="secondary" label="Switch" :loading="deployLoading" outlined />
+                        </template>
+                    </Column>
                 </DataTable>
             </template>
         </Card>
@@ -33,6 +64,7 @@
 </template>
 
 <script setup>
+import axios from "axios";
 import { computed, onMounted, ref } from "vue";
 import Card from 'primevue/card';
 import Message from 'primevue/message';
@@ -41,19 +73,32 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Divider from 'primevue/divider';
 import OrganizationChart from 'primevue/organizationchart';
-import Tabs from 'primevue/tabs';
-import TabList from 'primevue/tablist';
-import Tab from 'primevue/tab';
-import TabPanels from 'primevue/tabpanels';
-import TabPanel from 'primevue/tabpanel';
+import Button from 'primevue/button';
+import CurrentVersion from './CurrentVersion.vue';
+import Splitter from 'primevue/splitter';
+import SplitterPanel from 'primevue/splitterpanel';
+import ConfirmPopup from "primevue/confirmpopup";
+import SwitchAlias from './SwitchAlias.vue';
+import Popover from 'primevue/popover';
+import InputText from 'primevue/inputtext';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+
 import { useRoute } from "vue-router";
+import { useConfirm } from "primevue/useconfirm";
 
     const project = ref({})
     const loading = ref(true)
+    const deployLoading = ref(false)
     const deployments = ref([])
     const functionsMapped = ref([])
+    const currentVersions = ref([])
+
+    const selectedFunction = ref(0)
+    const op = ref();
 
     const hasAliases = computed(() => project.value.stack_resources?.functions.some((f) => f.alias))
+
+    const confirm = useConfirm();
 
     const columns = [
         {
@@ -99,18 +144,14 @@ import { useRoute } from "vue-router";
         functionsMapped.value = project.value.stack_resources?.functions.map(resource => {
             const children = [];
 
-            children.push({
-                label: resource.alias
-            });
-
-            children.push({
-                label: resource.version
-            });
-
             resource.triggers.forEach(trigger => {
                 children.push({
-                    label: trigger.function
+                    label: trigger.Service
                 });
+            })
+
+            children.push({
+                label: resource.alias
             });
 
             return {
@@ -118,6 +159,60 @@ import { useRoute } from "vue-router";
                 children: children
             };
         })
+    }
+
+    const confirmRollback = (event, deployment) => {
+        confirm.require({
+            target: event.currentTarget,
+            message: 'Do you want to rollback to this deployment?',
+            icon: 'pi pi-info-circle',
+            rejectProps: {
+                label: 'Cancel',
+                severity: 'secondary',
+                outlined: true
+            },
+            acceptProps: {
+                label: 'Rollback',
+                severity: 'danger'
+            },
+            accept: () => {
+                rollbackToDeployment(deployment);
+            },
+            reject: () => {}
+        });
+    };
+
+    const rollbackToDeployment = async (deployment) => {
+        try {
+            deployLoading.value = true
+            await axios.put(`/api/projects/${route.params.id}/deployments/${deployment.id}/rollback`);
+            updateVersions()
+        } catch (error) {
+            console.log(error);
+        } finally {
+            deployLoading.value = false;
+        }
+    }
+
+    const setVersionRef = (el) => {
+        currentVersions.value.push(el);
+    }
+
+    const updateVersions = () => {
+        currentVersions.value.forEach((cv) => cv.loadVersion())
+    }
+
+
+    const getProjectURL = () => {
+        return `${window.location.origin}/api/projects/${route.params.id}/deploy`
+    }
+
+    const toggle = (event) => {
+        op.value.toggle(event);
+    }
+
+    const copy = async () => {
+        await navigator.clipboard.writeText(getProjectURL());
     }
 
     onMounted(() => {

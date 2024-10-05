@@ -11,7 +11,7 @@
             <Column v-for="col of columns" :key="col.key" :field="col.dataIndex" :header="col.title"></Column>
             <Column header="Action">
                 <template #body="slotProps">
-                    <Button @click="router.push(`projects/${slotProps.data.id}`)" label="See" outlined></Button>
+                    <Button @click="router.push(`projects/${slotProps.data.id}`)" label="Show" outlined></Button>
                     <Button @click="confirmDelete($event, slotProps.data)" label="Delete" severity="danger" outlined></Button>
                 </template>
             </Column>

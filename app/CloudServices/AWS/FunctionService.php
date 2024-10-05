@@ -4,10 +4,8 @@ namespace App\CloudServices\AWS;
 
 use App\Contracts\CloudServices\FunctionServiceContract;
 use App\Models\Credential;
-use App\Models\Project;
 use Aws\Result;
 use Aws\Sdk;
-use JmesPath\Env as JmesPath;
 
 class FunctionService implements FunctionServiceContract
 {
@@ -34,9 +32,9 @@ class FunctionService implements FunctionServiceContract
         $client = (new Sdk($credential->settings->getSettings()))->createLambda();
 
         return $client->updateAlias([
-            'FunctionName' => $function,
             'Name' => $alias,
-            'version' => $version,
+            'FunctionName' => $function,
+            'FunctionVersion' => $version,
         ]);
     }
 
@@ -51,15 +49,28 @@ class FunctionService implements FunctionServiceContract
         return $client->getPolicy($args);
     }
 
-    public function listAliasesFromProject(Project $project): array
+    public function getAliasVersion(Credential $credential, string $function, string $alias): string
     {
-        $lambdas = JmesPath::search("StackResourceSummaries[?ResourceType == 'AWS::Lambda::Function'].PhysicalResourceId", $project->stack_resources);
-        $aliases = [];
+        $client = (new Sdk($credential->settings->getSettings()))->createLambda();
 
-        foreach ($lambdas as $lambda) {
-            $aliases[$lambda] = $this->listAliases($project->credential, $lambda)->get('Aliases');
+        return $client->getAlias([
+            'Name' => $alias,
+            'FunctionName' => $function,
+        ])->get('FunctionVersion');
+    }
+
+    public function listVersionsByFunction(Credential $credential, string|array $function): array
+    {
+        $client = (new Sdk($credential->settings->getSettings()))->createLambda();
+
+        if (is_string($function)) {
+            $functions[$function]['versions'] = $client->listVersionsByFunction(['FunctionName' => $function])->search('Versions[*].Version');
+        } else {
+            foreach ($function as $fun) {
+                $functions[$fun]['versions'] = $client->listVersionsByFunction(['FunctionName' => $fun])->search('Versions[*].Version');
+            }
         }
 
-        return $aliases;
+        return $functions;
     }
 }

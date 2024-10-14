@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Use this token for conect with the SAM plugin') }}
+            {{ __('Use this token for conect with the SAH plugin') }}
         </p>
     </header>
 

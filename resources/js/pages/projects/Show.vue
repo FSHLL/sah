@@ -6,15 +6,9 @@
             <Button icon="pi pi-send" severity="secondary" rounded text @click="toggle" />
             <Popover ref="op">
                 <div class="flex flex-col gap-4 w-[25rem]">
-                    <div>
-                        <span class="font-medium block mb-2">Deploy project URL</span>
-                        <InputGroup>
-                            <InputText v-on:focus="$event.target.select()" :value="getProjectURL()" readonly class="w-[25rem]"></InputText>
-                            <InputGroupAddon>
-                                <em class="pi pi-copy" @click="copy"></em>
-                            </InputGroupAddon>
-                        </InputGroup>
-                    </div>
+                    <span class="font-medium block mb-2">Deploy project URL</span>
+                    <InputText v-on:focus="$event.target.select()" :value="getProjectURL()" readonly></InputText>
+                    <Button class="flex justify-center w-full" icon="pi pi-copy" severity="secondary" @click="copy" />
                 </div>
             </Popover>
         </template>
@@ -81,10 +75,10 @@ import ConfirmPopup from "primevue/confirmpopup";
 import SwitchAlias from './SwitchAlias.vue';
 import Popover from 'primevue/popover';
 import InputText from 'primevue/inputtext';
-import InputGroupAddon from 'primevue/inputgroupaddon';
 
 import { useRoute } from "vue-router";
 import { useConfirm } from "primevue/useconfirm";
+import { useToast } from "primevue/usetoast";
 
     const project = ref({})
     const loading = ref(true)
@@ -99,6 +93,7 @@ import { useConfirm } from "primevue/useconfirm";
     const hasAliases = computed(() => project.value.stack_resources?.functions.some((f) => f.alias))
 
     const confirm = useConfirm();
+    const toast = useToast()
 
     const columns = [
         {
@@ -212,7 +207,12 @@ import { useConfirm } from "primevue/useconfirm";
     }
 
     const copy = async () => {
-        await navigator.clipboard.writeText(getProjectURL());
+        try {
+            await navigator.clipboard.writeText(getProjectURL());
+            toast.add({ severity: 'success', summary: 'Copy successful', life: 3000 });
+        } catch(error) {
+            toast.add({ severity: 'error', summary: 'Error', detail: error.message, life: 3000 });
+        }
     }
 
     onMounted(() => {

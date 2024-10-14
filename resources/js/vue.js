@@ -8,6 +8,7 @@ import Aura from './presets/aura'
 import Message from 'primevue/message';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
+import Toast from 'primevue/toast';
 
 const app = createApp()
 
@@ -29,5 +30,6 @@ app.use(ConfirmationService)
 app.component('theme', Theme)
 app.component('access-key-form', AccessKeyForm)
 app.component('message', Message)
+app.component('toast', Toast)
 
 app.mount('#app')

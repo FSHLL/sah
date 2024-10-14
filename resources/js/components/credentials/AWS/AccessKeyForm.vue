@@ -1,6 +1,5 @@
 <template>
     <div class="mt-6 space-y-6">
-        <Toast />
         <div>
             <label class="block font-medium text-sm text-gray-700 dark:text-gray-300">Key ID</label>
             <InputText type="text" v-model="accessKeyId" />
@@ -22,7 +21,6 @@ import { useToast } from "primevue/usetoast";
 import InputText from "primevue/inputtext";
 import Password from "primevue/password";
 import Button from "primevue/button";
-import Toast from "primevue/toast";
 import AutoComplete from "primevue/autocomplete";
 import axios from 'axios';
 
@@ -51,8 +49,7 @@ const createAccessKeys = async () => {
         })
         window.location.reload();
     } catch (error) {
-        console.log(error);
-        toast.add({ severity: 'error', summary: 'Error', detail: error.message, life: 3000 });
+        toast.add({ severity: 'error', summary: 'Error', detail: error.response?.data.message ?? error.message, life: 5000 });
     } finally {
         loading.value = false
     }

@@ -8,11 +8,11 @@
             </div>
             <div class="flex items-center gap-4 mb-8">
                 <label for="email" class="font-semibold w-24">Stack</label>
-                <Select v-model="project.stack" :options="stacks" filter optionLabel="StackName" placeholder="Select a Stack" class="flex-auto" />
+                <Select :loading="loadingStacks" v-model="project.stack" :options="stacks" filter optionLabel="StackName" placeholder="Select a Stack" class="flex-auto" />
             </div>
             <div class="flex justify-end gap-2">
                 <Button type="button" label="Cancel" severity="secondary" @click="visible = false" :loading="loading"></Button>
-                <Button type="button" label="Save" @click="createProject"></Button>
+                <Button :disabled="!project.name && !project.stack" type="button" label="Save" @click="createProject"></Button>
             </div>
         </Dialog>
     </div>
@@ -25,22 +25,26 @@ import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import Button from 'primevue/button';
 import axios from 'axios';
+import { useToast } from 'primevue/usetoast';
 
     const project = ref({});
     const visible = ref(false);
+    const loadingStacks = ref(false);
     const loading = ref(false);
 
     const stacks = ref([]);
 
+    const toast = useToast()
+
     const loadStacks= async () => {
         try {
-            loading.value = true;
+            loadingStacks.value = true;
             const response = await axios.get('/api/stacks');
             stacks.value = response.data;
         } catch (error) {
-            console.log(error);
+            toast.add({ severity: 'error', summary: 'Error', detail: error.response?.data.message ?? error.message, life: 3000 });
         } finally {
-            loading.value = false;
+            loadingStacks.value = false;
         }
     }
 
@@ -54,7 +58,7 @@ import axios from 'axios';
             loading.value = false;
             visible.value = false;
         } catch (error) {
-            console.log(error);
+            toast.add({ severity: 'error', summary: 'Error', detail: error.response?.data.message ?? error.message, life: 5000 });
         } finally {
             loading.value = false;
         }

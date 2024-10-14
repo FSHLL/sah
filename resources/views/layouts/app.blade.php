@@ -16,6 +16,7 @@
     </head>
     <body class="font-sans antialiased">
         <div id="app" class="min-h-screen bg-gray-100 dark:bg-gray-900">
+            <toast></toast>
             @include('layouts.navigation')
 
             <!-- Page Heading -->

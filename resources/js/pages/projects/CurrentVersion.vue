@@ -5,6 +5,7 @@
 <script setup>
 import axios from 'axios';
 import Tag from 'primevue/tag';
+import { useToast } from 'primevue/usetoast';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -20,6 +21,7 @@ const props = defineProps({
 })
 
 const route = useRoute()
+const toast = useToast
 
 const version = ref(null)
 const loading = ref(true)
@@ -34,7 +36,7 @@ const loadVersion = async () => {
         });
         version.value = response.data
     } catch (error) {
-        console.log(error);
+        toast.add({ severity: 'error', summary: 'Error', detail: error.response?.data.message ?? error.message, life: 5000 });
     } finally {
         loading.value = false;
     }

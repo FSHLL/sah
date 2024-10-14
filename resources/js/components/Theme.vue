@@ -36,7 +36,6 @@ const primaryColors = [
 const updateColors = (colorName) => {
         let selectedColor;
         const root = document.documentElement;
-        console.log(colorName);
 
         selectedColor = primaryColors.find((color) => color.name === colorName);
         selectedPrimaryColor.value = colorName;

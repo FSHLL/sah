@@ -1,8 +1,8 @@
 <template>
     <ConfirmPopup></ConfirmPopup>
-    <Panel :header="project.name">
+    <Panel :header="projectStore.project.name">
         <template #icons>
-            <SwitchAlias @versions-updated="updateVersions"></SwitchAlias>
+            <SwitchAlias v-if="hasAliases" @versions-updated="updateVersions"></SwitchAlias>
             <Button icon="pi pi-send" severity="secondary" rounded text @click="toggle" />
             <Popover ref="op">
                 <div class="flex flex-col gap-4 w-[25rem]">
@@ -13,7 +13,7 @@
             </Popover>
         </template>
         <Message v-if="!hasAliases" severity="warn">No Alias created for this project</Message>
-        <Message v-if="project.stack_resources?.alias_sync" severity="info">Alias Sync</Message>
+        <Message v-if="projectStore.project.stack_resources?.alias_sync" severity="info">Alias Sync</Message>
         <br>
         <div class="card">
             <Splitter style="height: 300px">
@@ -24,7 +24,7 @@
                             role="button"
                             class="text-slate-800 flex w-full items-center rounded-md p-3 transition-all hover:bg-slate-100 focus:bg-slate-100 active:bg-slate-100"
                         >
-                            {{ func.label }} - <current-version :ref="setVersionRef" :function="func.label"/>
+                            {{ func.label }} <current-version v-if="hasAliases" :ref="setVersionRef" :function="func.label"/>
                         </div>
                     </nav>
                 </SplitterPanel>
@@ -40,10 +40,10 @@
             </Splitter>
         </div>
         <Divider/>
-        <Card>
+        <Card v-if="hasAliases">
             <template #title>Deployments</template>
             <template #content>
-                <DataTable :loading="loading" :value="deployments.data" tableStyle="min-width: 50rem">
+                <DataTable paginator :rows="deploymentStore.perPage" :totalRecords="deploymentStore.total" lazy :loading="deploymentStore.loading" :value="deploymentStore.deployments" tableStyle="min-width: 50rem">
                     <template #empty> No deployments found. </template>
                     <Column v-for="col of columns" :key="col.key" :field="col.dataIndex" :header="col.title"></Column>
                     <Column header="Action">
@@ -79,21 +79,22 @@ import InputText from 'primevue/inputtext';
 import { useRoute } from "vue-router";
 import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
+import { useProjectStore } from "../../stores/projectStore";
+import { useDeploymentStore } from "../../stores/deploymentStore";
 
-    const project = ref({})
-    const loading = ref(true)
     const deployLoading = ref(false)
-    const deployments = ref([])
-    const functionsMapped = ref([])
     const currentVersions = ref([])
 
     const selectedFunction = ref(0)
     const op = ref();
 
-    const hasAliases = computed(() => project.value.stack_resources?.functions.some((f) => f.alias))
+    const hasAliases = computed(() => projectStore.project.stack_resources?.functions.some((f) => f.alias !== ''))
 
     const confirm = useConfirm();
     const toast = useToast()
+    const projectStore = useProjectStore()
+    const deploymentStore = useDeploymentStore()
+    const route = useRoute()
 
     const columns = [
         {
@@ -108,52 +109,39 @@ import { useToast } from "primevue/usetoast";
         },
     ];
 
-    const route = useRoute()
-
-    const loadProject = async () => {
-        try {
-            loading.value = true;
-            const response = await axios.get(`/api/projects/${route.params.id}`);
-            project.value = response.data;
-            mapFunction()
-        } catch (error) {
-            console.log(error);
-        } finally {
-            loading.value = false;
-        }
-    }
-
-    const loadDeployments = async () => {
-        try {
-            loading.value = true;
-            const response = await axios.get(`/api/projects/${route.params.id}/deployments`);
-            deployments.value = response.data;
-        } catch (error) {
-            console.log(error);
-        } finally {
-            loading.value = false;
-        }
-    }
-
-    const mapFunction = () => {
-        functionsMapped.value = project.value.stack_resources?.functions.map(resource => {
+    const functionsMapped = computed(() => {
+        return projectStore.project.stack_resources?.functions.map(resource => {
             const children = [];
 
             resource.triggers.forEach(trigger => {
                 children.push({
-                    label: trigger.Service
+                    label: trigger.service
                 });
             })
 
-            children.push({
-                label: resource.alias
-            });
+            if (resource.alias) {
+                children.push({
+                    label: resource.alias
+                });
+            }
 
             return {
                 label: resource.function,
                 children: children
             };
         })
+    })
+
+    const loadProject = async () => {
+        if (route.params.id !== projectStore.project.id) {
+            await projectStore.loadProject(route.params.id)
+        }
+    }
+
+    const loadDeployments = async () => {
+        if (projectStore.project.id) {
+            await deploymentStore.loadDeployments(projectStore.project)
+        }
     }
 
     const confirmRollback = (event, deployment) => {
@@ -197,7 +185,6 @@ import { useToast } from "primevue/usetoast";
         currentVersions.value.forEach((cv) => cv.loadVersion())
     }
 
-
     const getProjectURL = () => {
         return `${window.location.origin}/api/projects/${route.params.id}/deploy`
     }
@@ -215,8 +202,8 @@ import { useToast } from "primevue/usetoast";
         }
     }
 
-    onMounted(() => {
-        loadProject()
-        loadDeployments()
+    onMounted(async () => {
+        await loadProject()
+        await loadDeployments()
     })
 </script>

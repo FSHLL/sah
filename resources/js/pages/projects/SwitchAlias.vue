@@ -33,7 +33,7 @@ import { useRoute } from 'vue-router';
 
     const route = useRoute()
 
-    const emit = defineEmits(['pi-arrow-right-arrow-left'])
+    const emit = defineEmits(['versions-updated'])
 
     const loadVersion = async () => {
         try {

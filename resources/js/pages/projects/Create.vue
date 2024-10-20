@@ -8,11 +8,14 @@
             </div>
             <div class="flex items-center gap-4 mb-8">
                 <label for="email" class="font-semibold w-24">Stack</label>
-                <Select :loading="loadingStacks" v-model="project.stack" :options="stacks" filter optionLabel="StackName" placeholder="Select a Stack" class="flex-auto" />
+                <Select :loading="loadingStacks" v-model="project.stack" :options="stacks" filter
+                    optionLabel="StackName" placeholder="Select a Stack" class="flex-auto" />
             </div>
             <div class="flex justify-end gap-2">
-                <Button type="button" label="Cancel" severity="secondary" @click="visible = false" :loading="loading"></Button>
-                <Button :disabled="!project.name && !project.stack" type="button" label="Save" @click="createProject"></Button>
+                <Button type="button" label="Cancel" severity="secondary" @click="visible = false"
+                    :loading="projectStore.loading"></Button>
+                <Button :disabled="!project.name && !project.stack" type="button" label="Save"
+                    @click="createProject"></Button>
             </div>
         </Dialog>
     </div>
@@ -25,46 +28,40 @@ import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
 import Button from 'primevue/button';
 import axios from 'axios';
+import { useProjectStore } from '../../stores/projectStore';
 import { useToast } from 'primevue/usetoast';
 
-    const project = ref({});
-    const visible = ref(false);
-    const loadingStacks = ref(false);
-    const loading = ref(false);
+const project = ref({});
+const visible = ref(false);
+const loadingStacks = ref(false);
+const stacks = ref([]);
 
-    const stacks = ref([]);
+const toast = useToast()
+const projectStore = useProjectStore()
 
-    const toast = useToast()
-
-    const loadStacks= async () => {
-        try {
-            loadingStacks.value = true;
-            const response = await axios.get('/api/stacks');
-            stacks.value = response.data;
-        } catch (error) {
-            toast.add({ severity: 'error', summary: 'Error', detail: error.response?.data.message ?? error.message, life: 3000 });
-        } finally {
-            loadingStacks.value = false;
-        }
+const loadStacks = async () => {
+    try {
+        loadingStacks.value = true;
+        const response = await axios.get('/api/stacks');
+        stacks.value = response.data;
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: error.response?.data.message ?? error.message, life: 3000 });
+    } finally {
+        loadingStacks.value = false;
     }
+}
 
-    const createProject= async () => {
-        try {
-            loading.value = true;
-            await axios.post('/api/projects', {
-                name: project.value.name,
-                stack_id: project.value.stack.StackId,
-            });
-            loading.value = false;
-            visible.value = false;
-        } catch (error) {
-            toast.add({ severity: 'error', summary: 'Error', detail: error.response?.data.message ?? error.message, life: 5000 });
-        } finally {
-            loading.value = false;
-        }
-    }
-
-    onMounted(() => {
-        loadStacks()
+const createProject = async () => {
+    const newProject = await projectStore.storeProject({
+        name: project.value.name,
+        stack_id: project.value.stack.StackId,
     })
+    if (newProject) {
+        visible.value = false
+    }
+}
+
+onMounted(() => {
+    loadStacks()
+})
 </script>

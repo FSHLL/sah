@@ -25,6 +25,10 @@ class RollbackDeploymentAction
             );
         }
 
+        $project = $deployment->project;
+        $project->stack_resources = $stack;
+        $project->save();
+
         return true;
     }
 }

@@ -18,7 +18,7 @@ class StoreDeploymentAction
 
         $deploy->project_id = $project->id;
 
-        UpdateStackResourcesInfo::dispatchSync($project);
+        UpdateStackResourcesInfo::dispatch($project);
 
         $stack_resources = StackResourcesFactory::create(
             $project->credential->type->value,

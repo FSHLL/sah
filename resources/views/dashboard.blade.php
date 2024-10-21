@@ -12,7 +12,7 @@
                     @if (Auth::user()->credential()->exists())
                         <message :closable="false">Keys Config</message>
                     @else
-                        <access-key-form :regions=@json(App\Enums\AWSRegion::values())></access-key-form>
+                        @include('profile.partials.credentials-form')
                     @endif
                 </div>
             </div>

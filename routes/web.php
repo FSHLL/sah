@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CredentialsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TokensController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::resource('/tokens', TokensController::class)->only(['store', 'destroy']);
+    Route::resource('credentials', CredentialsController::class)->only(['store', 'update', 'destroy']);
 
     Route::get('projects', fn () => view('project.index'))->name('projects');
     Route::get('projects/{any}', fn () => view('project.index'))->where('any', '.*');

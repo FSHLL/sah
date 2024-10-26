@@ -3,6 +3,7 @@
     <Panel :header="projectStore.project.name">
         <template #icons>
             <SwitchAlias v-if="hasAliases" @versions-updated="updateVersions"></SwitchAlias>
+            <Form :edit="true" button-label="" button-icon="pi pi-file-edit" />
             <Button icon="pi pi-send" severity="secondary" rounded text @click="toggle" />
             <Popover ref="op">
                 <div class="flex flex-col gap-4 w-[25rem]">
@@ -81,6 +82,7 @@ import { useConfirm } from "primevue/useconfirm";
 import { useToast } from "primevue/usetoast";
 import { useProjectStore } from "../../stores/projectStore";
 import { useDeploymentStore } from "../../stores/deploymentStore";
+import Form from "./Form.vue";
 
     const deployLoading = ref(false)
     const currentVersions = ref([])

@@ -6,7 +6,7 @@
             <template #header>
                 <div class="flex flex-wrap items-center justify-between gap-2">
                     <span class="text-xl font-bold"></span>
-                    <Create></Create>
+                    <Form/>
                 </div>
             </template>
             <Column v-for="col of columns" :key="col.key" :field="col.dataIndex" :header="col.title"></Column>
@@ -40,7 +40,7 @@ import Column from 'primevue/column';
 import Button from 'primevue/button';
 import ConfirmPopup from 'primevue/confirmpopup'
 import { useRouter } from "vue-router";
-import Create from "./Create.vue";
+import Form from "./Form.vue";
 import { useProjectStore } from "../../stores/projectStore";
 
 const confirm = useConfirm();

@@ -60,6 +60,18 @@ export const useProjectStore = defineStore('projects', {
                 this.loadingData = false
             }
         },
+        async updateProject(project) {
+            try {
+                this.loadingData = true
+                const response = await axios.put(`/api/projects/${project.id}`, project);
+                this.project = response.data
+                return response.data
+            } catch (error) {
+                this.toast.add({ severity: 'error', summary: 'Error', detail: error.response?.data.message ?? error.message, life: 3000 });
+            } finally {
+                this.loadingData = false
+            }
+        },
         async deleteProject(project) {
             try {
                 this.loadingData = true

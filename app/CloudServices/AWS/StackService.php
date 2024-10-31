@@ -13,7 +13,9 @@ class StackService implements StackServiceContract
     {
         $client = (new Sdk($credential->settings->getSettings()))->createCloudFormation();
 
-        return $client->listStacks()->get('StackSummaries');
+        return $client->listStacks([
+            'StackStatusFilter' => ['UPDATE_COMPLETE', 'CREATE_COMPLETE', 'UPDATE_ROLLBACK_COMPLETE']
+        ])->get('StackSummaries');
     }
 
     public function getStack(Credential $credential, string $stackId): Result

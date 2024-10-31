@@ -188,7 +188,7 @@ import Form from "./Form.vue";
     }
 
     const getProjectURL = () => {
-        return `${window.location.origin}/api/projects/${route.params.id}/deploy`
+        return `${window.location.origin}/api/projects/${route.params.id}/deployments`
     }
 
     const toggle = (event) => {

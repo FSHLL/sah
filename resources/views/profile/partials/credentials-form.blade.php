@@ -20,14 +20,14 @@
         @method($credential ? 'put' : 'post')
 
         <div>
-            <x-input-label for="name" :value="__('Name')" />
+            <x-input-label for="name" :value="__('Acces Key Id')" />
             <x-text-input id="access_key_id" name="access_key_id" class="mt-1 block w-full" autocomplete="Access key id"
                 required />
             <x-input-error :messages="$errors->get('access_key_id')" class="mt-2" />
         </div>
 
         <div>
-            <x-input-label for="name" :value="__('Name')" />
+            <x-input-label for="name" :value="__('Acces Key Secret')" />
             <x-text-input type="password" id="access_key_secret" name="access_key_secret" class="mt-1 block w-full"
                 autocomplete="Access key secret" required />
             <x-input-error :messages="$errors->get('access_key_secret')" class="mt-2" />

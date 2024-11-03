@@ -1,6 +1,6 @@
 <template>
     <Button :icon="buttonIcon" severity="secondary" rounded text @click="visible = true" />
-    <Dialog v-model:visible="visible" modal header="Create Project" :style="{ width: '25rem' }">
+    <Dialog v-model:visible="visible" modal :header="modalName" :style="{ width: '25rem' }">
         <div class="flex items-center gap-4 mb-4">
             <label for="name" class="font-semibold w-24">Name</label>
             <InputText v-model="project.name" id="name" class="flex-auto" autocomplete="off" />
@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
 import Select from 'primevue/select';
@@ -57,7 +57,9 @@ const props = defineProps({
 
 project.value.id = projectStore.project.id
 project.value.name = projectStore.project.name
-project.value.alias = projectStore.project.alias
+project.value.alias = projectStore.project.alias ?? 'ACTIVE'
+
+const modalName = computed(() => props.edit ? 'Edit Project' : 'Create Project')
 
 const loadStacks = async () => {
     try {

@@ -21,7 +21,7 @@ class StoreOrUpdateProject
 
         $project->save();
 
-        UpdateStackResourcesInfo::dispatch($project);
+        UpdateStackResourcesInfo::dispatchSync($project);
 
         return $project;
     }

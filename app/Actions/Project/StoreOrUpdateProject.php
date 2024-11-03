@@ -15,12 +15,13 @@ class StoreOrUpdateProject
 
         $project->name = $request->input('name');
         $project->stack_id = $request->input('stack_id');
+        $project->alias = $request->input('alias');
         $project->credential_id = auth()->user()->credential->id;
         $project->user_id = auth()->id();
 
         $project->save();
 
-        UpdateStackResourcesInfo::dispatch($project);
+        UpdateStackResourcesInfo::dispatchSync($project);
 
         return $project;
     }

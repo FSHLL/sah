@@ -36,10 +36,10 @@ abstract class StackBase implements Arrayable
 
         foreach ($this->getFunctions() as $index => $funcName) {
 
-            $alias = $aliases[$index];
+            $alias = $aliases[$index] ?? '';
             $version = $versions[$index];
 
-            $tri = array_filter($triggers, fn ($trigger) => $trigger['function'] === $alias);
+            $tri = array_filter($triggers, fn ($trigger) => $trigger['function'] === $alias || str_contains($trigger['function'], $funcName));
 
             $groupedInfo[] = [
                 'function' => $funcName,
@@ -54,9 +54,9 @@ abstract class StackBase implements Arrayable
 
     public function toArray(): array
     {
-        return [
+        return $this->stack ? [
             'functions' => $this->groupStackInfo(),
             'alias_sync' => $this->aliasSync(),
-        ];
+        ] : [];
     }
 }

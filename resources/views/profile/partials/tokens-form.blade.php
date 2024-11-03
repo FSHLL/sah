@@ -15,7 +15,7 @@
         <div>
             <x-input-label for="name" :value="__('Name')" />
             <x-text-input id="name" name="name" class="mt-1 block w-full" autocomplete="Token name" />
-            <x-input-error :messages="$errors->updatePassword->get('name')" class="mt-2" />
+            <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
         <div class="flex items-center gap-4">
@@ -65,7 +65,7 @@
                                 class="font-medium text-red-600 dark:text-red-500 hover:underline">
                                 Delete
                             </a>
-                            <x-modal name="confirm-token-deletion-{{ $token->id }}" :show="$errors->userDeletion->isNotEmpty()" focusable>
+                            <x-modal name="confirm-token-deletion-{{ $token->id }}" :show="$errors->tokenDeletion->isNotEmpty()" focusable>
                                 <form method="post" action="{{ route('tokens.destroy', $token) }}" class="p-6">
                                     @csrf
                                     @method('delete')

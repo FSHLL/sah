@@ -6,7 +6,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "aws/aws-sdk-php": "^3.317",
+        "bref/bref": "^2.3",
+        "bref/laravel-bridge": "^2.4",
         "kongulov/interact-with-enum": "^1.0",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",

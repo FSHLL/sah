@@ -3,14 +3,15 @@ import PrimeVue from 'primevue/config';
 import router from './routes/router'
 import { i18nVue } from 'laravel-vue-i18n'
 import Theme from './components/Theme.vue'
-import AccessKeyForm from './components/credentials/AWS/AccessKeyForm.vue'
 import Aura from './presets/aura'
 import Message from 'primevue/message';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
 import Toast from 'primevue/toast';
+import { createPinia } from 'pinia';
 
 const app = createApp()
+const pinia = createPinia()
 
 app.use(router)
 app.use(i18nVue, {
@@ -26,9 +27,9 @@ app.use(PrimeVue, {
 });
 app.use(ToastService)
 app.use(ConfirmationService)
+app.use(pinia)
 
 app.component('theme', Theme)
-app.component('access-key-form', AccessKeyForm)
 app.component('message', Message)
 app.component('toast', Toast)
 

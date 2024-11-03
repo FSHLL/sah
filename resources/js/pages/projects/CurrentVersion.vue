@@ -21,7 +21,7 @@ const props = defineProps({
 })
 
 const route = useRoute()
-const toast = useToast
+const toast = useToast()
 
 const version = ref(null)
 const loading = ref(true)

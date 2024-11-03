@@ -11,6 +11,7 @@ class StoreProjectRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:120'],
             'stack_id' => ['required', 'string', 'unique:projects,stack_id'],
+            'alias' => ['required', 'string'],
         ];
     }
 }

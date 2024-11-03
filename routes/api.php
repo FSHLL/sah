@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\CredentialsController;
 use App\Http\Controllers\Api\ProjectDeploymentsController;
 use App\Http\Controllers\Api\ProjectsController;
 use App\Http\Controllers\Api\StacksController;
@@ -11,7 +10,6 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('credentials', CredentialsController::class)->middleware('auth:sanctum');
 Route::apiResource('projects', ProjectsController::class)->middleware('auth:sanctum');
 Route::get('projects/{project}/aliasVersion', [ProjectsController::class, 'aliasVersion'])->middleware('auth:sanctum');
 Route::get('projects/{project}/versions', [ProjectsController::class, 'versions'])->middleware('auth:sanctum');

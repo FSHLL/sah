@@ -16,6 +16,7 @@ class Project extends Model
     protected $fillable = [
         'name',
         'stack_id',
+        'alias',
         'stack_resources',
         'user_id',
         'credential_id',

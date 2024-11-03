@@ -9,22 +9,24 @@ class AWSStack extends StackBase
 {
     public function getFunctions(): array
     {
-        return JmesPath::search("StackResourceSummaries[?ResourceType == 'AWS::Lambda::Function'].PhysicalResourceId", $this->stack);
+        return JmesPath::search("StackResourceSummaries[?ResourceType == 'AWS::Lambda::Function'].PhysicalResourceId", $this->stack) ?? [];
     }
 
     public function getAliases(): array
     {
-        return JmesPath::search("StackResourceSummaries[?ResourceType == 'AWS::Lambda::Alias'].PhysicalResourceId", $this->stack);
+        return JmesPath::search("StackResourceSummaries[?ResourceType == 'AWS::Lambda::Alias'].PhysicalResourceId", $this->stack) ?? [];
     }
 
     public function getVersions(): array
     {
-        return JmesPath::search("StackResourceSummaries[?ResourceType == 'AWS::Lambda::Version'].PhysicalResourceId", $this->stack);
+        $versions = JmesPath::search("StackResourceSummaries[?ResourceType == 'AWS::Lambda::Version'].PhysicalResourceId", $this->stack) ?? [];
+
+        return array_map(fn ($version) => Str::afterLast($version, ':'), $versions);
     }
 
     public function getTriggers(): array
     {
-        return JmesPath::search('Triggers[*].Statement[].{function: Resource, Service: Principal.Service}', $this->stack) ?? [];
+        return JmesPath::search('Triggers[*].Statement[].{function: Resource, service: Principal.Service}', $this->stack) ?? [];
     }
 
     public function aliasSync(): bool

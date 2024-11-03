@@ -20,10 +20,14 @@ class RollbackDeploymentAction
             $functionService->updateAlias(
                 $deployment->project->credential,
                 $function,
-                'ACTIVE',
+                $deployment->project->alias,
                 Str::afterLast($versions[$index], ':')
             );
         }
+
+        $project = $deployment->project;
+        $project->stack_resources = $stack;
+        $project->save();
 
         return true;
     }

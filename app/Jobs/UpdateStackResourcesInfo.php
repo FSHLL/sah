@@ -31,7 +31,9 @@ class UpdateStackResourcesInfo implements ShouldQueue
             $stack
         );
 
-        foreach ($stackObject->getAliases() as $function) {
+        $functions = ! empty($aliases = $stackObject->getAliases()) ? $aliases : $stackObject->getFunctions();
+
+        foreach ($functions as $function) {
             try {
                 $stack['Triggers'][] = json_decode($functionService->getTriggers(
                     $this->project->credential,

@@ -13,7 +13,7 @@ class UpdateVersions
         $functionService = FunctionServiceFactory::create($project->credential->type->value);
 
         foreach ($request->input('functions') as $function => $version) {
-            $functionService->updateAlias($project->credential, $function, 'ACTIVE', $version);
+            $functionService->updateAlias($project->credential, $function, $project->alias, $version);
         }
 
         return true;

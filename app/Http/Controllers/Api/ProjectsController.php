@@ -54,7 +54,7 @@ class ProjectsController extends Controller
         $functionService = FunctionServiceFactory::create($project->credential->type->value);
 
         return Response::json(
-            $functionService->getAliasVersion($project->credential, $request->input('function'), 'ACTIVE')
+            $functionService->getAliasVersion($project->credential, $request->input('function'), $project->alias)
         );
     }
 
